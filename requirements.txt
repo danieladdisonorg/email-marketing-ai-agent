@@ -1,0 +1,6 @@
+gspread
+oauth2client
+requests
+python-dotenv
+langchain_core
+langchain_openai
