@@ -1,7 +1,135 @@
-# Automated Email Marketing, Tracking, and Call Script Generation with Google Apps Script
+# Email Marketing AI Agent
 
-## Flow Diagram
-![System Flow Diagram](docs/diagram.png)
+## System Architecture Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                           EMAIL MARKETING AI AGENT WORKFLOW                          │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────┐    ┌──────────────────┐    ┌──────────────────┐
+│   Data Sources   │    │   AI Processing  │    │   Output Systems │
+└──────────────────┘    └──────────────────┘    └──────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                                STEP 1: DATA COLLECTION                               │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+    ┌─────────────┐         ┌─────────────┐         ┌─────────────┐
+    │   Zoho CRM  │────────▶│ get_emails  │────────▶│ zoho_emails │
+    │ (Existing   │         │    .py      │         │   .csv      │
+    │ Customers)  │         │             │         │             │
+    └─────────────┘         └─────────────┘         └─────────────┘
+                                   │
+    ┌─────────────┐                │                 ┌─────────────┐
+    │ prospects   │                │                 │ Google      │
+    │   .csv      │────────────────┼────────────────▶│ Sheets      │
+    │ (New Leads) │                │                 │ (Email DB)  │
+    └─────────────┘                │                 └─────────────┘
+                                   ▼
+                            ┌─────────────┐
+                            │   Domain    │
+                            │ Comparison  │
+                            │  Analysis   │
+                            └─────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                           STEP 2: AI EMAIL GENERATION                                │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+    ┌─────────────┐         ┌─────────────┐         ┌─────────────┐
+    │   Domain    │   YES   │ Personalized│         │   OpenAI    │
+    │   Match?    │────────▶│   Email     │────────▶│   GPT-4     │
+    │             │         │ Generation  │         │             │
+    └─────────────┘         └─────────────┘         └─────────────┘
+           │                                               │
+           │ NO                                            │
+           ▼                                               ▼
+    ┌─────────────┐         ┌─────────────┐         ┌─────────────┐
+    │  Generic    │         │   Email     │         │ Generated   │
+    │   Email     │────────▶│ Templates   │────────▶│ Email with  │
+    │ Generation  │         │             │         │ Tracking    │
+    └─────────────┘         └─────────────┘         └─────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                         STEP 3: EMAIL SENDING & TRACKING                             │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+    ┌─────────────┐         ┌─────────────┐         ┌─────────────┐
+    │ Google      │         │ Google Apps │         │   Email     │
+    │ Sheets      │────────▶│   Script    │────────▶│ Recipients  │
+    │ (Email DB)  │         │ (Sender)    │         │             │
+    └─────────────┘         └─────────────┘         └─────────────┘
+                                   │                        │
+                                   │                        │
+                                   ▼                        ▼
+                            ┌─────────────┐         ┌─────────────┐
+                            │  Tracking   │◀────────│   Email     │
+                            │   Pixel     │         │   Opens     │
+                            │  (Web App)  │         │             │
+                            └─────────────┘         └─────────────┘
+                                   │
+                                   ▼
+                            ┌─────────────┐
+                            │ Update Open │
+                            │ Count in    │
+                            │ Sheets      │
+                            └─────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                      STEP 4: ENGAGEMENT ANALYSIS & FOLLOW-UP                         │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+    ┌─────────────┐         ┌─────────────┐         ┌─────────────┐
+    │ Email Opens │         │   Opens     │   YES   │ AI Call     │
+    │ Monitoring  │────────▶│   > 5?      │────────▶│ Script      │
+    │             │         │             │         │ Generation  │
+    └─────────────┘         └─────────────┘         └─────────────┘
+                                   │                        │
+                                   │ NO                     │
+                                   ▼                        ▼
+                            ┌─────────────┐         ┌─────────────┐
+                            │ Continue    │         │ Upload to   │
+                            │ Monitoring  │         │ Call Script │
+                            │             │         │   Sheet     │
+                            └─────────────┘         └─────────────┘
+                                                           │
+                                                           ▼
+                                                    ┌─────────────┐
+                                                    │ Upload to   │
+                                                    │ Zoho CRM    │
+                                                    │ (Lead Data) │
+                                                    └─────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                              SYSTEM COMPONENTS                                        │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐
+│ Python      │  │ Google Apps │  │ Google      │  │ OpenAI      │  │ Zoho CRM    │
+│ Scripts     │  │ Script      │  │ Sheets API  │  │ GPT-4 API   │  │ API         │
+│             │  │             │  │             │  │             │  │             │
+│• get_emails │  │• Email      │  │• Data       │  │• Email      │  │• Customer   │
+│• clean_and_ │  │  Sending    │  │  Storage    │  │  Generation │  │  Data       │
+│  gen_call_  │  │• Tracking   │  │• Open       │  │• Call       │  │• Lead       │
+│  script     │  │  Pixel      │  │  Logging    │  │  Scripts    │  │  Management │
+└─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                                 KEY FEATURES                                         │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+✅ Multi-alias email sending
+✅ Real-time open tracking with hidden pixels
+✅ AI-powered personalized email generation
+✅ Automatic call script creation for high-engagement leads
+✅ Integration with Zoho CRM and Google Workspace
+✅ Domain-based customer relationship detection
+✅ Automated lead scoring and follow-up prioritization
+```
+
+This diagram shows the complete workflow of your email marketing AI agent, from data collection through AI-powered email generation, tracking, and automated follow-up. The system intelligently personalizes emails based on existing customer relationships and automatically generates call scripts for highly engaged prospects.
+
 
 ## Demo Video For Email Tracking
 https://github.com/user-attachments/assets/74bcf609-1499-41e9-b3cb-a3f01ba4bc1a
@@ -40,10 +168,10 @@ app_script_email_automation/
 ## Project Setup
 1. **Clone the Repository**  
 ``` bash
-https://github.com/aaqib-ahmed-nazir/automated-email-marketing-and-tracking.git
+      git clone https://github.com/danieladdisonorg/email-marketing-ai-agent.git
 ```
 ``` bash
-   cd automated-email-marketing-and-tracking
+      cd email-marketing-ai-agent
 ```
 2. **Create Environment File (.env)**  
    - Add your OpenAI API key and other credentials.  
@@ -119,10 +247,6 @@ https://github.com/aaqib-ahmed-nazir/automated-email-marketing-and-tracking.git
 - [Google Sheets](https://www.google.com/sheets/about/)
 - [OpenAI GPT-4.0](https://openai.com/product/gpt-4)
 
-## Contributors
-This project was not possible without these amazing contributors:
-- [Hashim Muhammad Nadeem](https://github.com/hash2004)
-- [Haroon Wajid](https://github.com/haroonwajid)
 
 ## License
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).

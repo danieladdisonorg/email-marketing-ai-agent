@@ -1,0 +1,10 @@
+/testing
+/src/credentials.json
+/data
+/.venv
+.DS_Store
+/src/send_email.js
+src/script.py
+src/update.py
+.env
+src/functions/config.py
